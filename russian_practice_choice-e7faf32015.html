@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>俄语第六格和动词变位选择题</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #6c757d;
+            transition: all 0.3s ease;
+            border: none;
+            background: none;
+        }
+
+        .tab:hover {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            color: #495057;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .instruction {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 4px solid #2196F3;
+        }
+
+        .instruction strong {
+            color: #1976D2;
+        }
+
+        .exercise-item {
+            background: #f8f9fa;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 15px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .exercise-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+        }
+
+        .question {
+            font-size: 1.4em;
+            color: #212529;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .question .russian {
+            color: #667eea;
+            font-weight: 700;
+        }
+
+        .question .highlight {
+            background: #fff3cd;
+            padding: 2px 8px;
+            border-radius: 5px;
+            color: #856404;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .option-btn {
+            padding: 20px;
+            background: white;
+            border: 3px solid #ced4da;
+            border-radius: 12px;
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 70px;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: #667eea;
+            background: #f8f9ff;
+            transform: translateY(-2px);
+        }
+
+        .option-btn.correct {
+            border-color: #28a745;
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .option-btn.incorrect {
+            border-color: #dc3545;
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .option-btn .russian {
+            font-size: 1.4em;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1.1em;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        .hint {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            color: #856404;
+            font-size: 1em;
+            border-left: 4px solid #ffc107;
+            line-height: 1.6;
+        }
+
+        .hint strong {
+            color: #856404;
+        }
+
+        .score {
+            text-align: center;
+            padding: 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            margin: 30px 0;
+            font-size: 1.5em;
+            font-weight: 700;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .reset-btn {
+            display: block;
+            margin: 30px auto 0;
+            padding: 15px 40px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .guide-section {
+            background: #fff3cd;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .guide-section h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .guide-section p {
+            color: #856404;
+            margin-bottom: 12px;
+            line-height: 1.7;
+        }
+
+        .guide-section .example {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .verb-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .verb-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-size: 1.1em;
+        }
+
+        .verb-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .verb-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .verb-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .verb-table .person {
+            font-weight: 600;
+            color: #495057;
+            width: 40%;
+        }
+
+        .verb-table .form {
+            font-size: 1.2em;
+            color: #667eea;
+            font-weight: 700;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .tab {
+                flex: 1 1 50%;
+                padding: 15px;
+                font-size: 1em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .exercise-item {
+                padding: 20px;
+            }
+
+            .question {
+                font-size: 1.2em;
+            }
+
+            .options-container {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .option-btn {
+                padding: 18px;
+                font-size: 1.2em;
+                min-height: 60px;
+            }
+
+            .verb-table th,
+            .verb-table td {
+                padding: 12px;
+                font-size: 0.95em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 俄语第六格和动词变位选择题</h1>
+            <p>点击选择正确答案 · 无需打字 · 即时反馈</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('practice')">练习模式</button>
+            <button class="tab" onclick="switchTab('guide')">学习模式</button>
+        </div>
+
+        <div class="content">
+            <!-- 练习模式 -->
+            <div id="practice" class="tab-content active">
+                <div class="section-title">名词第六格选择题</div>
+
+                <div class="instruction">
+                    <strong>题目说明：</strong>选择正确的第六格（Предложный падеж）形式。<br>
+                    第六格用于前置词 <strong>о (关于)</strong>、<strong>в (在...里)</strong>、<strong>на (在...上)</strong> 之后。
+                </div>
+
+                <!-- 题目1：学校 -->
+                <div class="exercise-item" data-question="1">
+                    <div class="question">
+                        1. 名词 <span class="russian">школа</span> (学校) 的第六格形式是？
+                    </div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="selectAnswer(1, 'A')"><span class="russian">школа</span></button>
+                        <button class="option-btn" onclick="selectAnswer(1, 'B')"><span class="russian">школы</span></button>
+                        <button class="option-btn" onclick="selectAnswer(1, 'C')"><span class="russian">школе</span></button>
+                        <button class="option-btn" onclick="selectAnswer(1, 'D')"><span class="russian">школу</span></button>
+                    </div>
+                    <div class="feedback" id="q1-feedback"></div>
+                    <div class="hint">提示：阴性名词以 -а 结尾，第六格词尾变为 -е</div>
+                </div>
+
+                <!-- 题目2：工厂 -->
+                <div class="exercise-item" data-question="2">
+                    <div class="question">
+                        2. 名词 <span class="russian">завод</span> (工厂) 的第六格形式是？
+                    </div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="selectAnswer(2, 'A')"><span class="russian">завод</span></button>
+                        <button class="option-btn" onclick="selectAnswer(2, 'B')"><span class="russian">завода</span></button>
+                        <button class="option-btn" onclick="selectAnswer(2, 'C')"><span class="russian">заводе</span></button>
+                        <button class="option-btn" onclick="selectAnswer(2, 'D')"><span class="russian">заводу</span></button>
+                    </div>
+                    <div class="feedback" id="q2-feedback"></div>
+                    <div class="hint">提示：阳性名词以辅音结尾，第六格词尾加 -е</div>
+                </div>
+
+                <!-- 题目3：医院 -->
+                <div class="exercise-item" data-question="3">
+                    <div class="question">
+                        3. 名词 <span class="russian">больница</span> (医院) 的第六格形式是？
+                    </div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="selectAnswer(3, 'A')"><span class="russian">больнице</span></button>
+                        <button class="option-btn" onclick="selectAnswer(3, 'B')"><span class="russian">больницы</span></button>
+                        <button class="option-btn" onclick="selectAnswer(3, 'C')"><span class="russian">больницу</span></button>
+                        <button class="option-btn" onclick="selectAnswer(3, 'D')"><span class="russian">больница</span></button>
+                    </div>
+                    <div class="feedback" id="q3-feedback"></div>
+                    <div class="hint">提示：阴性名词以 -а 结尾，第六格词尾变为 -е，注意重音</div>
+                </div>
+
+                <!-- 题目4：邮局 -->
+                <div class="exercise-item" data-question="4">
+                    <div class="question">
+                        4. 名词 <span class="russian">почта</span> (邮局) 的第六格形式是？
+                    </div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="selectAnswer(4, 'A')"><span class="russian">почта</span></button>
+                        <button class="option-btn" onclick="selectAnswer(4, 'B')"><span class="russian">почте</span></button>
+                        <button class="option-btn" onclick="selectAnswer(4, 'C')"><span class="russian">почты</span></button>
+                        <button class="option-btn" onclick="selectAnswer(4, 'D')"><span class="russian">почту</span></button>
+                    </div>
+                    <div class="feedback" id="q4-feedback"></div>
+                    <div class="hint">提示：阴性名词以 -а 结尾，第六格词尾变为 -е</div>
+                </div>
+
+                <!-- 题目5：大学 -->
+                <div class="exercise-item" data-question="5">
+                    <div class="question">
+                        5. 名词 <span class="russian">университет</span> (大学) 的第六格形式是？
+                    </div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="selectAnswer(5, 'A')"><span class="russian">университете</span></button>
+                        <button class="option-btn" onclick="selectAnswer(5, 'B')"><span class="russian">университет</span></button>
+                        <button class="option-btn" onclick="selectAnswer(5, 'C')"><span class="russian">университета</span></button>
+                        <button class="option-btn" onclick="selectAnswer(5, 'D')"><span class="russian">университету</span></button>
+                    </div>
+                    <div class="feedback" id="q5-feedback"></div>
+                    <div class="hint">提示：阳性名词以 -т 结尾，第六格词尾加 -е</div>
+                </div>
+
+                <div class="score" id="case-score">
+                    名词第六格得分: 0 / 5
+                </div>
+
+                <div class="section-title" style="margin-top: 50px;">动词变位选择题</div>
+
+                <div class="instruction">
+                    <strong>题目说明：</strong>选择正确的动词变位形式。
+                </div>
+
+                <!-- 题目6：работать - 我 -->
+                <div class="exercise-item" data-question="6">
+                    <div class="question">
+                        6. 动词 <span class="russian">работать</span> (工作) - 第一人称单数"我"的形式是？
+                    </div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="selectAnswer(6, 'A')"><span class="russian">работаю</span></button>
+                        <button class="option-btn" onclick="selectAnswer(6, 'B')"><span class="russian">работаешь</span></button>
+                        <button class="option-btn" onclick="selectAnswer(6, 'C')"><span class="russian">работает</span></button>
+                        <button class="option-btn" onclick="selectAnswer(6, 'D')"><span class="russian">работаем</span></button>
+                    </div>
+                    <div class="feedback" id="q6-feedback"></div>
+                </div>
+
+                <!-- 题目7：работar - 他/她/它 -->
+                <div class="exercise-item" data-question="7">
+                    <div class="question">
+                        7. 动词 <span class="russian">работать</span> (工作) - 第三人称单数"他/她/它"的形式是？
+                    </div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="selectAnswer(7, 'A')"><span class="russian">работаю</span></button>
+                        <button class="option-btn" onclick="selectAnswer(7, 'B')"><span class="russian">работаете</span></button>
+                        <button class="option-btn" onclick="selectAnswer(7, 'C')"><span class="russian">работает</span></button>
+                        <button class="option-btn" onclick="selectAnswer(7, 'D')"><span class="russian">работают</span></button>
+                    </div>
+                    <div class="feedback" id="q7-feedback"></div>
+                </div>
+
+                <!-- 题目8：работать - 他们 -->
+                <div class="exercise-item" data-question="8">
+                    <div class="question">
+                        8. 动词 <span class="russian">работать</span> (工作) - 第三人称复数"他们"的形式是？
+                    </div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="selectAnswer(8, 'A')"><span class="russian">работаем</span></button>
+                        <button class="option-btn" onclick="selectAnswer(8, 'B')"><span class="russian">работаете</span></button>
+                        <button class="option-btn" onclick="selectAnswer(8, 'C')"><span class="russian">работают</span></button>
+                        <button class="option-btn" onclick="selectAnswer(8, 'D')"><span class="russian">работает</span></button>
+                    </div>
+                    <div class="feedback" id="q8-feedback"></div>
+                </div>
+
+                <!-- 题目9：учиться - 我 -->
+                <div class="exercise-item" data-question="9">
+                    <div class="question">
+                        9. 动词 <span class="russian">учиться</span> (学习) - 第一人称单数"我"的形式是？
+                    </div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="selectAnswer(9, 'A')"><span class="russian">учусь</span></button>
+                        <button class="option-btn" onclick="selectAnswer(9, 'B')"><span class="russian">учишься</span></button>
+                        <button class="option-btn" onclick="selectAnswer(9, 'C')"><span class="russian">учится</span></button>
+                        <button class="option-btn" onclick="selectAnswer(9, 'D')"><span class="russian">учимся</span></button>
+                    </div>
+                    <div class="feedback" id="q9-feedback"></div>
+                    <div class="hint">提示：反身动词在元音后加 -сь</div>
+                </div>
+
+                <!-- 题目10：учиться - 你 -->
+                <div class="exercise-item" data-question="10">
+                    <div class="question">
+                        10. 动词 <span class="russian">учиться</span> (学习) - 第二人称单数"你"的形式是？
+                    </div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="selectAnswer(10, 'A')"><span class="russian">учусь</span></button>
+                        <button class="option-btn" onclick="selectAnswer(10, 'B')"><span class="russian">учишься</span></button>
+                        <button class="option-btn" onclick="selectAnswer(10, 'C')"><span class="russian">учится</span></button>
+                        <button class="option-btn" onclick="selectAnswer(10, 'D')"><span class="russian">учитесь</span></button>
+                    </div>
+                    <div class="feedback" id="q10-feedback"></div>
+                    <div class="hint">提示：反身动词在辅音后加 -ся</div>
+                </div>
+
+                <!-- 题目11：учиться - 我们 -->
+                <div class="exercise-item" data-question="11">
+                    <div class="question">
+                        11. 动词 <span class="russian">учиться</span> (学习) - 第一人称复数"我们"的形式是？
+                    </div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="selectAnswer(11, 'A')"><span class="russian">учимся</span></button>
+                        <button class="option-btn" onclick="selectAnswer(11, 'B')"><span class="russian">учитесь</span></button>
+                        <button class="option-btn" onclick="selectAnswer(11, 'C')"><span class="russian">учатся</span></button>
+                        <button class="option-btn" onclick="selectAnswer(11, 'D')"><span class="russian">учится</span></button>
+                    </div>
+                    <div class="feedback" id="q11-feedback"></div>
+                </div>
+
+                <!-- 题目12：учиться - 他们 -->
+                <div class="exercise-item" data-question="12">
+                    <div class="question">
+                        12. 动词 <span class="russian">учиться</span> (学习) - 第三人称复数"他们"的形式是？
+                    </div>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="selectAnswer(12, 'A')"><span class="russian">учимся</span></button>
+                        <button class="option-btn" onclick="selectAnswer(12, 'B')"><span class="russian">учитесь</span></button>
+                        <button class="option-btn" onclick="selectAnswer(12, 'C')"><span class="russian">учатся</span></button>
+                        <button class="option-btn" onclick="selectAnswer(12, 'D')"><span class="russian">учится</span></button>
+                    </div>
+                    <div class="feedback" id="q12-feedback"></div>
+                </div>
+
+                <div class="score" id="verb-score">
+                    动词变位得分: 0 / 7
+                </div>
+
+                <div class="score" id="total-score">
+                    总分: 0 / 12
+                </div>
+
+                <button class="reset-btn" onclick="resetAll()">🔄 重置所有练习</button>
+            </div>
+
+            <!-- 学习模式 -->
+            <div id="guide" class="tab-content">
+                <div class="section-title">学习资料</div>
+
+                <div class="guide-section">
+                    <h3>📖 名词第六格（Предложный падеж）</h3>
+                    <p><strong>用法：</strong>第六格主要用于表示"关于什么"、"在什么地方"。</p>
+                    <p><strong>常见前置词：</strong>о (关于)、в (在...里)、на (在...上)</p>
+                    <div class="example">
+                        例句：Я говорю о школе. (我谈论关于学校的事)<br>
+                        例句：Он работает в больнице. (他在医院工作)
+                    </div>
+                </div>
+
+                <div class="guide-section">
+                    <h3>📖 单数第六格变格规则</h3>
+
+                    <h4>阳性名词：</h4>
+                    <p>以辅音结尾：加 -е</p>
+                    <div class="example">
+                        завод → заводе (工厂)<br>
+                        университет → университете (大学)
+                    </div>
+
+                    <h4>阴性名词：</h4>
+                    <p>以 -а 结尾：变为 -е</p>
+                    <div class="example">
+                        школа → школе (学校)<br>
+                        больница → больнице (医院)<br>
+                        почта → почте (邮局)
+                    </div>
+
+                    <p>以 -я 结尾：变为 -е</p>
+                    <div class="example">
+                        семья → семье (家庭)
+                    </div>
+
+                    <p>以 -ь 结尾：变为 -и</p>
+                    <div class="example">
+                        ночь → ночи (夜晚)
+                    </div>
+
+                    <h4>中性名词：</h4>
+                    <p>以 -о 结尾：变为 -е</p>
+                    <div class="example">
+                        окно → окне (窗户)
+                    </div>
+
+                    <p>以 -е 结尾：不变</p>
+                    <div class="example">
+                        поле → поле (田野)
+                    </div>
+
+                    <p>以 -ие 结尾：变为 -ии</p>
+                    <div class="example">
+                        здание → здании (建筑物)
+                    </div>
+                </div>
+
+                <div class="guide-section">
+                    <h3>📖 动词变位</h3>
+
+                    <h4>работать (工作) - 第一变位法</h4>
+                    <table class="verb-table">
+                        <tr>
+                            <th>人称</th>
+                            <th>形式</th>
+                        </tr>
+                        <tr><td class="person">я (我)</td><td class="form">работаю</td></tr>
+                        <tr><td class="person">ты (你)</td><td class="form">работаешь</td></tr>
+                        <tr><td class="person">он/она/оно (他/她/它)</td><td class="form">работает</td></tr>
+                        <tr><td class="person">мы (我们)</td><td class="form">работаем</td></tr>
+                        <tr><td class="person">вы (你们/您)</td><td class="form">работаете</td></tr>
+                        <tr><td class="person">они (他们)</td><td class="form">работают</td></tr>
+                    </table>
+
+                    <h4 style="margin-top: 25px;">учиться (学习) - 第二变位法</h4>
+                    <table class="verb-table">
+                        <tr>
+                            <th>人称</th>
+                            <th>形式</th>
+                        </tr>
+                        <tr><td class="person">я (我)</td><td class="form">учусь</td></tr>
+                        <tr><td class="person">ты (你)</td><td class="form">учишься</td></tr>
+                        <tr><td class="person">он/она/оно (他/她/它)</td><td class="form">учится</td></tr>
+                        <tr><td class="person">мы (我们)</td><td class="form">учимся</td></tr>
+                        <tr><td class="person">вы (你们/您)</td><td class="form">учитесь</td></tr>
+                        <tr><td class="person">они (他们)</td><td class="form">учатся</td></tr>
+                    </table>
+
+                    <div class="example" style="margin-top: 20px;">
+                        <strong>注意：учиться 是反身动词</strong><br>
+                        ✓ 在元音后用 -сь (如：учусь)<br>
+                        ✓ 在辅音后用 -ся (如：учишься)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 正确答案
+        const correctAnswers = {
+            1: 'C',  // школа → школе
+            2: 'C',  // завод → заводе
+            3: 'A',  // больница → больнице
+            4: 'B',  // почта → почте
+            5: 'A',  // университет → университете
+            6: 'A',  // я → работаю
+            7: 'C',  // он/она/оно → работает
+            8: 'C',  // они → работают
+            9: 'A',  // я → учусь
+            10: 'B', // ты → учишься
+            11: 'A', // мы → учимся
+            12: 'C'  // они → учатся
+        };
+
+        // 得分跟踪
+        let caseScore = 0;
+        let verbScore = 0;
+        let answeredQuestions = new Set();
+
+        // 切换标签页
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // 选择答案
+        function selectAnswer(questionNum, selectedOption) {
+            const questionId = 'q' + questionNum;
+            const feedback = document.getElementById(questionId + '-feedback');
+            const exerciseItem = document.querySelector(`[data-question="${questionNum}"]`);
+            const buttons = exerciseItem.querySelectorAll('.option-btn');
+            const correctAnswer = correctAnswers[questionNum];
+
+            // 禁用所有按钮
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                const btnOption = btn.textContent.trim();
+
+                // 标记正确答案
+                const optionMap = ['A', 'B', 'C', 'D'];
+                const btnIndex = Array.from(buttons).indexOf(btn);
+                if (optionMap[btnIndex] === correctAnswer) {
+                    btn.classList.add('correct');
+                }
+            });
+
+            // 检查用户选择
+            if (selectedOption === correctAnswer) {
+                // 答案正确
+                event.target.classList.add('correct');
+                feedback.innerHTML = '🎉 正确！太棒了！';
+                feedback.className = 'feedback show correct';
+
+                // 更新得分
+                if (!answeredQuestions.has(questionNum)) {
+                    answeredQuestions.add(questionNum);
+                    if (questionNum <= 5) {
+                        caseScore++;
+                    } else {
+                        verbScore++;
+                    }
+                    updateScores();
+                }
+            } else {
+                // 答案错误
+                event.target.classList.add('incorrect');
+                const correctText = exerciseItem.querySelector('.option-btn.correct').textContent.trim();
+                feedback.innerHTML = '❌ 不对。正确答案是：<strong>' + correctText + '</strong>';
+                feedback.className = 'feedback show incorrect';
+
+                // 标记为已回答但不加分
+                answeredQuestions.add(questionNum);
+            }
+        }
+
+        // 更新得分显示
+        function updateScores() {
+            document.getElementById('case-score').textContent = '名词第六格得分: ' + caseScore + ' / 5';
+            document.getElementById('verb-score').textContent = '动词变位得分: ' + verbScore + ' / 7';
+            document.getElementById('total-score').textContent = '总分: ' + (caseScore + verbScore) + ' / 12';
+        }
+
+        // 重置所有练习
+        function resetAll() {
+            if (!confirm('确定要重置所有练习吗？')) return;
+
+            // 重置得分
+            caseScore = 0;
+            verbScore = 0;
+            answeredQuestions.clear();
+            updateScores();
+
+            // 重置所有按钮和反馈
+            document.querySelectorAll('.exercise-item').forEach(item => {
+                const buttons = item.querySelectorAll('.option-btn');
+                buttons.forEach(btn => {
+                    btn.disabled = false;
+                    btn.classList.remove('correct', 'incorrect');
+                });
+
+                const feedback = item.querySelector('.feedback');
+                if (feedback) {
+                    feedback.classList.remove('show');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
